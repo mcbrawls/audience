@@ -9,6 +9,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BundleS2CPacket;
 import net.minecraft.network.packet.s2c.play.ClearTitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
+import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.network.packet.s2c.play.WorldBorderInitializeS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
@@ -21,6 +22,8 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.border.WorldBorder;
 
+import java.util.Collections;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -29,6 +32,8 @@ import static net.minecraft.util.math.MathHelper.floor;
 
 @SuppressWarnings("unused")
 public interface Audience {
+    Set<PositionFlag> EMPTY_POSITION_FLAG_SET = Collections.emptySet();
+
     /**
      * The players of this audience.
      */
@@ -40,7 +45,7 @@ public interface Audience {
      * Teleports the audience to the given world using the given position and rotation.
      */
     default void teleport(ServerWorld world, Vec3d position, Vec2f rotation) {
-        forEachAudience(player -> player.teleport(world, position.x, position.y, position.z, rotation.x, rotation.y));
+        forEachAudience(player -> player.teleport(world, position.x, position.y, position.z, EMPTY_POSITION_FLAG_SET, rotation.x, rotation.y, true));
     }
 
     /**
@@ -49,7 +54,7 @@ public interface Audience {
     default void teleport(ServerWorld world, Function<ServerPlayerEntity, Vec3d> positionFunction) {
         forEachAudience( player -> {
             Vec3d position = positionFunction.apply(player);
-            player.teleport(world, position.x, position.y, position.z, 0.0f, 0.0f);
+            player.teleport(world, position.x, position.y, position.z, EMPTY_POSITION_FLAG_SET, 0.0f, 0.0f, true);
         });
     }
 
@@ -61,7 +66,7 @@ public interface Audience {
             Pair<Vec3d, Vec2f> positionAndRotation = positionRotationFunction.apply(player);
             Vec3d position = positionAndRotation.getLeft();
             Vec2f rotation = positionAndRotation.getRight();
-            player.teleport(world, position.x, position.y, position.z, rotation.x, rotation.y);
+            player.teleport(world, position.x, position.y, position.z, EMPTY_POSITION_FLAG_SET, rotation.x, rotation.y, true);
         });
     }
 
@@ -172,7 +177,7 @@ public interface Audience {
      * Teleports all audience players to the given [world] and [position].
      */
     default void teleport(ServerWorld world, Vec3d position) {
-        forEachAudience(player -> player.teleport(world, position.x, position.y, position.z, 0.0f, 0.0f));
+        forEachAudience(player -> player.teleport(world, position.x, position.y, position.z, EMPTY_POSITION_FLAG_SET, 0.0f, 0.0f, true));
     }
 
     /**
