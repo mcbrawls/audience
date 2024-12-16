@@ -73,7 +73,7 @@ object AudienceTest : ModInitializer {
         }
 
         ServerConfigurationConnectionEvents.CONFIGURE.register { handler, server ->
-            handler.addTask(SendResourcePackTask(MinecraftServer.ServerResourcePackProperties(UUID.randomUUID(), "http://localhost:25565/${packOne.hash}", packOne.hash, true, Text.literal("EEEE"))))
+            handler.addTask(SendResourcePackTask(MinecraftServer.ServerResourcePackProperties(UUID.randomUUID(), "http://localhost:25565/packs/${packOne.hash}", packOne.hash, true, Text.literal("EEEE"))))
         }
     }
 }

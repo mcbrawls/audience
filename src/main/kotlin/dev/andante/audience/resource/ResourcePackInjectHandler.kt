@@ -1,30 +1,29 @@
 package dev.andante.audience.resource
 
-import io.netty.channel.ChannelHandlerContext
-import net.mcbrawls.inject.http.HttpByteBuf
-import net.mcbrawls.inject.http.HttpByteBuf.httpBuf
-import net.mcbrawls.inject.http.HttpInjector
-import net.mcbrawls.inject.http.HttpRequest
+import io.javalin.Javalin
+import io.javalin.http.Context
+import net.mcbrawls.inject.fabric.InjectFabric
+import net.mcbrawls.inject.javalin.InjectJavalinFactory
 
-object ResourcePackInjectHandler : HttpInjector() {
+object ResourcePackInjectHandler {
     private val resourcePacks: MutableMap<String, ByteArray> = mutableMapOf()
 
-    override fun intercept(ctx: ChannelHandlerContext, request: HttpRequest): HttpByteBuf {
-        val response = httpBuf(ctx)
+    fun createJavalin(): Javalin {
+        return InjectJavalinFactory.create(InjectFabric.INSTANCE).apply {
+            get("/packs/{hash}", ::handleRequest)
+        }
+    }
 
-        val path = request.requestURI.removePrefix("/")
-        val pack = resourcePacks[path] ?: return response
+    fun handleRequest(context: Context) {
+        val hash = context.pathParam("hash")
 
-        if (!ctx.channel().isActive) {
-            return response
+        val pack = resourcePacks[hash]
+        if (pack == null) {
+            context.status(404)
+            return
         }
 
-        response.writeStatusLine("1.1", 200, "OK")
-        response.writeHeader("Content-Type", "application/zip")
-        response.writeHeader("Content-Length", pack.size.toString())
-        response.writeBytes(pack)
-
-        return response
+        context.result(pack)
     }
 
     /**

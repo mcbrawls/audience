@@ -3,7 +3,6 @@ package dev.andante.audience
 import dev.andante.audience.resource.ResourcePackInjectHandler
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
-import net.mcbrawls.inject.fabric.InjectFabric
 import net.minecraft.server.MinecraftServer
 
 object AudienceInitializer : ModInitializer {
@@ -16,8 +15,11 @@ object AudienceInitializer : ModInitializer {
 
     override fun onInitialize() {
         // register event to capture server
-        ServerLifecycleEvents.SERVER_STARTING.register { _minecraftServer = it }
+        ServerLifecycleEvents.SERVER_STARTING.register { server ->
+            _minecraftServer = server
 
-        InjectFabric.INSTANCE.registerInjector(ResourcePackInjectHandler)
+            val javalin = ResourcePackInjectHandler.createJavalin()
+            javalin.start(server.serverPort)
+        }
     }
 }

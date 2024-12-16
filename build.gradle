@@ -59,8 +59,9 @@ dependencies {
 
     include modImplementation ("com.github.yundom:kache:$kache_version")
 
+    include modImplementation ("io.javalin:javalin:$javalin_version")
     include modImplementation ("net.mcbrawls.inject:api:$inject_version")
-    include modImplementation ("net.mcbrawls.inject:http:$inject_version")
+    include modImplementation ("net.mcbrawls.inject:javalin:$inject_version")
     include modImplementation ("net.mcbrawls.inject:fabric:$inject_version")
 
     testImplementation sourceSets.main.output
