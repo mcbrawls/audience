@@ -5,11 +5,9 @@ import dev.andante.audience.Audience;
 import dev.andante.audience.player.PlayerReference;
 import dev.andante.audience.player.PlayerSet;
 import dev.andante.audience.player.StandalonePlayerReference;
-import net.minecraft.server.network.ServerPlayerEntity;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
