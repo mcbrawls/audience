@@ -33,6 +33,7 @@ data class ByteResourcePack(
         /**
          * Hashes a byte array to a sha1 string.
          */
+        @Suppress("DEPRECATION")
         private fun hashSha1(bytes: ByteArray): String {
             return Hashing.sha1().hashBytes(bytes).toString()
         }

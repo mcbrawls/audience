@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Optional;
@@ -121,7 +122,7 @@ public interface PlayerReference extends Audience {
         UUID uuid = this.getReferenceUuid();
         String urlString = "https://sessionserver.mojang.com/session/minecraft/profile/" + uuid;
         try {
-            URL url = new URL(urlString);
+            URL url = URI.create(urlString).toURL();
             try (InputStream stream = url.openStream()) {
                 InputStreamReader reader = new InputStreamReader(stream);
                 JsonElement jsonElement = JsonParser.parseReader(reader);
