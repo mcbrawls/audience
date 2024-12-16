@@ -1,12 +1,19 @@
 pluginManagement {
+	mod_id
+
 	repositories {
 		maven {
 			name = "Fabric"
-			url  = "https://maven.fabricmc.net/"
+			url = "https://maven.fabricmc.net/"
 		}
-		mavenCentral()
+
 		gradlePluginPortal()
+		mavenCentral()
+	}
+
+	plugins {
+		id "org.jetbrains.kotlin.jvm" version kotlin_version
 	}
 }
 
-rootProject.name = "audience"
+rootProject.name = mod_id

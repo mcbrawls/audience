@@ -2,15 +2,15 @@ package dev.andante.audience.resource
 
 import io.netty.channel.ChannelHandlerContext
 import net.mcbrawls.inject.http.HttpByteBuf
+import net.mcbrawls.inject.http.HttpByteBuf.httpBuf
 import net.mcbrawls.inject.http.HttpInjector
 import net.mcbrawls.inject.http.HttpRequest
-import net.mcbrawls.inject.http.httpBuffer
 
-object ResourcePackHandler : HttpInjector() {
+object ResourcePackInjectHandler : HttpInjector() {
     private val resourcePacks: MutableMap<String, ByteArray> = mutableMapOf()
 
     override fun intercept(ctx: ChannelHandlerContext, request: HttpRequest): HttpByteBuf {
-        val response = ctx.httpBuffer()
+        val response = httpBuf(ctx)
 
         val path = request.requestURI.removePrefix("/")
         val pack = resourcePacks[path] ?: return response

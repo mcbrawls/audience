@@ -7,7 +7,7 @@ import dev.andante.audience.player.PlayerReference
 import dev.andante.audience.player.PlayerSet
 import dev.andante.audience.player.StandalonePlayerReference
 import dev.andante.audience.resource.ByteResourcePack
-import dev.andante.audience.resource.ResourcePackHandler
+import dev.andante.audience.resource.ResourcePackInjectHandler
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents
@@ -62,8 +62,8 @@ object AudienceTest : ModInitializer {
 
         val packOne = ByteResourcePack(resourcePackBytes)
         val packTwo = ByteResourcePack(resourcePackBytesTwo)
-        ResourcePackHandler.add(packOne)
-        ResourcePackHandler.add(packTwo)
+        ResourcePackInjectHandler.add(packOne)
+        ResourcePackInjectHandler.add(packTwo)
         println(packOne.hash)
         println(packTwo.hash)
 
