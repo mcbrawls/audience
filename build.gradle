@@ -2,6 +2,7 @@ plugins {
     id "fabric-loom" version "1.9-SNAPSHOT"
     id "org.jetbrains.kotlin.jvm"
     id "maven-publish"
+    id "com.gradleup.shadow"
 }
 
 version = mod_version
@@ -59,10 +60,10 @@ dependencies {
 
     include modImplementation ("com.github.yundom:kache:$kache_version")
 
-    include modImplementation ("io.javalin:javalin:$javalin_version")
     include modImplementation ("net.mcbrawls.inject:api:$inject_version")
-    include modImplementation ("net.mcbrawls.inject:javalin:$inject_version")
     include modImplementation ("net.mcbrawls.inject:fabric:$inject_version")
+    include modImplementation ("net.mcbrawls.inject:javalin:$inject_version")
+    shadow modCompileOnly ("io.javalin:javalin:$javalin_version")
 
     testImplementation sourceSets.main.output
 }
@@ -96,6 +97,17 @@ jar {
     from("LICENSE") {
         rename { "${it}_${base.archivesName.get()}"}
     }
+}
+
+shadowJar {
+    configurations = [ project.configurations.shadow ]
+    exclude("META-INF")
+}
+
+remapJar {
+    dependsOn(shadowJar)
+    mustRunAfter(shadowJar)
+    inputFile = file(shadowJar.archivePath)
 }
 
 publishing {
