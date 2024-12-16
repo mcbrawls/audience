@@ -14,12 +14,16 @@ object AudienceInitializer : ModInitializer {
     val server: MinecraftServer get() = _minecraftServer
 
     override fun onInitialize() {
+        val javalin = ResourcePackInjectHandler.createJavalin()
+
         // register event to capture server
         ServerLifecycleEvents.SERVER_STARTING.register { server ->
             _minecraftServer = server
-
-            val javalin = ResourcePackInjectHandler.createJavalin()
             javalin.start(server.serverPort)
+        }
+
+        ServerLifecycleEvents.SERVER_STOPPING.register {
+            javalin.stop()
         }
     }
 }
