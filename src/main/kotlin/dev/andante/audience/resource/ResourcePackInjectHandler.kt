@@ -9,16 +9,15 @@ import net.mcbrawls.inject.http.HttpRequest
 object ResourcePackInjectHandler : HttpInjector() {
     private val resourcePacks: MutableMap<String, ByteArray> = mutableMapOf()
 
-    override fun intercept(ctx: ChannelHandlerContext, request: HttpRequest): HttpByteBuf {
-        val response = httpBuf(ctx)
-
+    override fun intercept(ctx: ChannelHandlerContext, request: HttpRequest): HttpByteBuf? {
         val path = request.requestURI.removePrefix("/")
-        val pack = resourcePacks[path] ?: return response
+        val pack = resourcePacks[path] ?: return null
 
         if (!ctx.channel().isActive) {
-            return response
+            return null
         }
 
+        val response = httpBuf(ctx)
         response.writeStatusLine("1.1", 200, "OK")
         response.writeHeader("Content-Type", "application/zip")
         response.writeHeader("Content-Length", pack.size.toString())
