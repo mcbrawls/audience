@@ -185,17 +185,19 @@ public interface Audience {
      */
     default void respawn() {
         forEachAudience(expectedPlayer -> {
-            MinecraftServer server = expectedPlayer.server;
-            PlayerManager playerManager = server.getPlayerManager();
-            ServerPlayerEntity player = playerManager.getPlayer(expectedPlayer.getUuid());
-            if (player != null) {
-                ServerPlayNetworkHandler handler = player.networkHandler;
-                if (player.notInAnyWorld) {
-                    player.notInAnyWorld = false;
-                    handler.player = playerManager.respawnPlayer(player, true, Entity.RemovalReason.KILLED);
-                } else {
-                    if (!(player.getHealth() > 0)) {
-                        handler.player = playerManager.respawnPlayer(player, false, Entity.RemovalReason.KILLED);
+            MinecraftServer server = expectedPlayer.getServer();
+            if (server != null) {
+                PlayerManager playerManager = server.getPlayerManager();
+                ServerPlayerEntity player = playerManager.getPlayer(expectedPlayer.getUuid());
+                if (player != null) {
+                    ServerPlayNetworkHandler handler = player.networkHandler;
+                    if (player.notInAnyWorld) {
+                        player.notInAnyWorld = false;
+                        handler.player = playerManager.respawnPlayer(player, true, Entity.RemovalReason.KILLED);
+                    } else {
+                        if (!(player.getHealth() > 0)) {
+                            handler.player = playerManager.respawnPlayer(player, false, Entity.RemovalReason.KILLED);
+                        }
                     }
                 }
             }
@@ -236,7 +238,7 @@ public interface Audience {
      */
     default void resetWorldBorder() {
         packet(player -> {
-            ServerWorld world = player.getServerWorld();
+            ServerWorld world = player.getWorld();
             WorldBorder border = world.getWorldBorder();
             return new WorldBorderInitializeS2CPacket(border);
         });
