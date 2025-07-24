@@ -11,6 +11,7 @@ import net.minecraft.network.packet.s2c.play.ClearTitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.network.packet.s2c.play.WorldBorderInitializeS2CPacket;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -171,6 +172,22 @@ public interface Audience {
      */
     default void stopSound(SoundStop soundStop) {
         packet(soundStop.getPacket());
+    }
+
+    /**
+     * Spawns a particle at a position for all audience players.
+     */
+    default <T extends ParticleEffect> void particle(Vec3d pos, ParticleBuilder<T> builder) {
+        Vec3d size = builder.getSize();
+        T effect = builder.getEffect();
+        boolean force = builder.getForce();
+        boolean important = builder.getImportant();
+        int count = builder.getCount();
+        double speed = builder.getSpeed();
+        forEachAudience(player -> {
+            ServerWorld world = player.getWorld();
+            world.spawnParticles(player, effect, force, important, pos.x, pos.y, pos.z, count, size.x, size.y, size.z, speed);
+        });
     }
 
     /**
