@@ -4,13 +4,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.mojang.authlib.GameProfile;
 import dev.andante.audience.Audience;
 import dev.andante.audience.AudienceInitializer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.PlayerConfigEntry;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.UserCache;
+import net.minecraft.util.NameToIdCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -104,13 +104,13 @@ public interface PlayerReference extends Audience {
     @Nullable
     default String getUserCachePlayerName() {
         MinecraftServer server = AudienceInitializer.INSTANCE.getServer();
-        UserCache userCache = server.getUserCache();
-        if (userCache != null) {
+        NameToIdCache cache = server.getNameToIdCache();
+        if (cache != null) {
             UUID uuid = this.getReferenceUuid();
-            Optional<GameProfile> maybeProfile = userCache.getByUuid(uuid);
-            if (maybeProfile.isPresent()) {
-                GameProfile profile = maybeProfile.get();
-                return profile.getName();
+            Optional<PlayerConfigEntry> maybeEntry = cache.getByUuid(uuid);
+            if (maybeEntry.isPresent()) {
+                PlayerConfigEntry profile = maybeEntry.get();
+                return profile.name();
             }
         }
 
