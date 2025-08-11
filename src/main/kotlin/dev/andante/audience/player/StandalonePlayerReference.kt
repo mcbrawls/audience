@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile
 import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.minecraft.server.PlayerConfigEntry
 import net.minecraft.util.Uuids
 import java.util.UUID
 import java.util.function.Function
@@ -71,5 +72,10 @@ class StandalonePlayerReference(private val referenceImplUuid: UUID) : PlayerRef
          * This game profile as a player reference.
          */
         val GameProfile.playerReference get() = this as PlayerReference
+
+        /**
+         * This player config entry as a player reference.
+         */
+        val PlayerConfigEntry.playerReference get() = this as PlayerReference
     }
 }
