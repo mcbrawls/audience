@@ -135,7 +135,7 @@ public interface Audience {
      * Broadcasts the given sound to the audience.
      */
     default void sound(ISound sound) {
-        positionedSound(sound, ServerPlayerEntity::getPos);
+        positionedSound(sound, ServerPlayerEntity::getEntityPos);
     }
 
     /**
@@ -150,7 +150,7 @@ public interface Audience {
      * Broadcasts the given sound to the audience from the given entity.
      */
     default void sound(ISound sound, Entity entity) {
-        sound(sound, entity.getPos());
+        sound(sound, entity.getEntityPos());
     }
 
     /**
@@ -185,7 +185,7 @@ public interface Audience {
         int count = builder.getCount();
         double speed = builder.getSpeed();
         forEachAudience(player -> {
-            ServerWorld world = player.getWorld();
+            ServerWorld world = player.getEntityWorld();
             world.spawnParticles(player, effect, force, important, pos.x, pos.y, pos.z, count, size.x, size.y, size.z, speed);
         });
     }
@@ -202,19 +202,17 @@ public interface Audience {
      */
     default void respawn() {
         forEachAudience(expectedPlayer -> {
-            MinecraftServer server = expectedPlayer.getServer();
-            if (server != null) {
-                PlayerManager playerManager = server.getPlayerManager();
-                ServerPlayerEntity player = playerManager.getPlayer(expectedPlayer.getUuid());
-                if (player != null) {
-                    ServerPlayNetworkHandler handler = player.networkHandler;
-                    if (player.notInAnyWorld) {
-                        player.notInAnyWorld = false;
-                        handler.player = playerManager.respawnPlayer(player, true, Entity.RemovalReason.KILLED);
-                    } else {
-                        if (!(player.getHealth() > 0)) {
-                            handler.player = playerManager.respawnPlayer(player, false, Entity.RemovalReason.KILLED);
-                        }
+            MinecraftServer server = expectedPlayer.getEntityWorld().getServer();
+            PlayerManager playerManager = server.getPlayerManager();
+            ServerPlayerEntity player = playerManager.getPlayer(expectedPlayer.getUuid());
+            if (player != null) {
+                ServerPlayNetworkHandler handler = player.networkHandler;
+                if (player.notInAnyWorld) {
+                    player.notInAnyWorld = false;
+                    handler.player = playerManager.respawnPlayer(player, true, Entity.RemovalReason.KILLED);
+                } else {
+                    if (!(player.getHealth() > 0)) {
+                        handler.player = playerManager.respawnPlayer(player, false, Entity.RemovalReason.KILLED);
                     }
                 }
             }
@@ -255,7 +253,7 @@ public interface Audience {
      */
     default void resetWorldBorder() {
         packet(player -> {
-            ServerWorld world = player.getWorld();
+            ServerWorld world = player.getEntityWorld();
             WorldBorder border = world.getWorldBorder();
             return new WorldBorderInitializeS2CPacket(border);
         });

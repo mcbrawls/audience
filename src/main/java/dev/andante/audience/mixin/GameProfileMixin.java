@@ -23,7 +23,7 @@ public abstract class GameProfileMixin implements Audience, PlayerReference {
     @Override
     public @NotNull UUID getReferenceUuid() {
         GameProfile that = (GameProfile) (Object) this;
-        return that.getId();
+        return that.id();
     }
 
     @Override

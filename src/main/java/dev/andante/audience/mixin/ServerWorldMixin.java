@@ -37,7 +37,7 @@ public abstract class ServerWorldMixin extends World implements Audience {
                 .stream()
                 .filter(
                         player -> {
-                            ServerWorld world = player.getWorld();
+                            ServerWorld world = player.getEntityWorld();
                             RegistryKey<World> playerWorldKey = world.getRegistryKey();
                             return playerWorldKey == registryKey;
                         }
